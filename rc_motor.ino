@@ -1,21 +1,44 @@
+#include <Wire.h>  
+#include <LiquidCrystal_I2C.h> // Using version 1.2.1
+LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  
+
 int pos = 0; //position for servo
 
-int ch1; // Here's where we'll keep our channel values
+int ch1=0000; // Here's where we'll keep our channel values
 
-int ch2;
+int ch2=0000;
 
-int ch3;
-int i;
-int u;
-int y;
+int ch3=0000;
+int i=000;
+int u=000;
+int y=000;
+int range=0;
 
 void setup() {
   // put your setup code here, to run once:
 pinMode(11, OUTPUT);//pin 11 is connected to mosfet
 pinMode(9, OUTPUT);
 pinMode(5, OUTPUT);
-Serial.begin(9600); // Pour a bowl of Serial
-
+  Serial.begin(9600); // Pour a bowl of Serial
+lcd.begin(16,2); // sixteen characters across - 2 lines
+  lcd.backlight();
+  // first character - 1st line
+  lcd.setCursor(1,0);
+  lcd.print("STARTING...");
+  // 8th character - 2nd line 
+  lcd.setCursor(0,1);
+  
+for (int p = 0; p <=16 ; p++) {
+    // turn the pin on:
+    lcd.print("=");
+     delay(50);
+  
+  }
+  delay(100);
+  lcd.setCursor(0,0);
+  lcd.print("                   ");
+  lcd.setCursor(0,1);
+   lcd.print("                   ");
 }
 
 void loop() {
@@ -37,46 +60,37 @@ Serial.println(ch2);
 Serial.print("Channel 3:");
 
 Serial.println(ch3);
-//=========================================
-//=============channel 1=============  
- if(ch1<1010)
-{
-   Serial.print("Ch1 pwm:");
-Serial.println(i);
-analogWrite(11, 0);
-}
-else{
-  i = 0.273*(ch1)-263; //converts 2000-1000 to 1-255
-  Serial.print("Ch1 pwm:");
- Serial.println(i);
- analogWrite(11, i);
-}
-//=========================================
-//=============channel 2=============
- if(ch2<1010)
-{
-  Serial.print("Ch2 pwm:");
-Serial.println(u);
-analogWrite(9, 0);
-}
-else{
-  u = 0.273*(ch2)-253; //converts 2000-1000 to 1-255
-  Serial.print("Ch2 pwm:");
- Serial.println(u);
- analogWrite(9, u);
-}
-//=========================================
-//=============channel 3=============
- if(ch3<1010)
-{
-   Serial.print("Ch3 pwm:");
-Serial.println(y);
-analogWrite(5, 0);
-}
-    else{
-  y = 0.273*(ch3)-253; //converts 2000-1000 to 1-255
-   Serial.print("Ch3 pwm:");
- Serial.println(y);
- analogWrite(5, y);
-}
-}
+while(range<=3) {
+    switch (range) {
+    case 0:    // your hand is on the sensor
+      lcd.setCursor(0,1);
+  lcd.print("Channel 1");
+lcd.setCursor(0,0);
+  lcd.print("RAW:");
+  lcd.print("0000");
+  lcd.setCursor(4,0);
+   lcd.print(ch1);
+  lcd.setCursor(9,0);
+  lcd.print("PWM:");
+  lcd.print("000");
+  //lcd.setCursor(12,0);
+   lcd.print("100");
+      break;
+    case 1:    // your hand is close to the sensor
+      lcd.setCursor(0,1);
+  lcd.print("Channel 2");
+lcd.setCursor(0,0);
+  lcd.print("RAW:");
+  lcd.print("0000");
+  lcd.setCursor(4,0);
+   lcd.print("1000");
+  lcd.setCursor(9,0);
+  lcd.print("PWM:");
+  lcd.print("000");
+  //lcd.setCursor(12,0);
+   lcd.print("100");
+      break;
+    case 2:    // your hand is a few inches from the sensor
+       lcd.setCursor(0,1);
+  lcd.print("Channel 3");
+lcd.setCursor(0,0);
